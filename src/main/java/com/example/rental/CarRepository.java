@@ -5,6 +5,7 @@ import org.springframework.stereotype.Repository;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Repository
 public class CarRepository {
@@ -26,5 +27,12 @@ public class CarRepository {
 
     public void updateCar(Car car) {
         cars.replaceAll(c -> c.getRegistrationNumber().equals(car.getRegistrationNumber()) ? car : c);
+    }
+
+    // New method to find cars by model
+    public List<Car> findByModel(String model) {
+        return cars.stream()
+                .filter(car -> car.getModel().equalsIgnoreCase(model))
+                .collect(Collectors.toList());
     }
 }

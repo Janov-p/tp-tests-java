@@ -7,7 +7,7 @@ import java.util.List;
 import java.util.Optional;
 
 @Service
-public class CarRentalService {
+public class    CarRentalService {
 
     @Autowired
     private CarRepository carRepository;
@@ -33,4 +33,20 @@ public class CarRentalService {
             carRepository.updateCar(c);
         });
     }
+
+    // Add a new car
+    public boolean addCar(Car car) {
+        Optional<Car> existingCar = carRepository.findByRegistrationNumber(car.getRegistrationNumber());
+        if (existingCar.isPresent()) {
+            return false; // Car with the same registration number already exists
+        }
+        carRepository.addCar(car);
+        return true;
+    }
+
+    // Search for cars by model
+    public List<Car> searchCarsByModel(String model) {
+        return carRepository.findByModel(model);
+    }
+
 }
