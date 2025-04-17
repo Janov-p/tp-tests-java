@@ -69,4 +69,42 @@ class CarRentalServiceTest {
         assertTrue(unavailableCar.isAvailable());
         verify(carRepository).updateCar(unavailableCar);
     }
+
+    @Test
+    void testAddCar_Success() {
+        Car newCar = new Car("NEW123", "Civic", true);
+
+        when(carRepository.findByRegistrationNumber("NEW123")).thenReturn(Optional.empty());
+
+        boolean result = service.addCar(newCar);
+
+        assertTrue(result);
+        verify(carRepository).addCar(newCar);
+    }
+
+    @Test
+    void testAddCar_AlreadyExists() {
+        Car existingCar = new Car("EXIST123", "Yaris", true);
+
+        when(carRepository.findByRegistrationNumber("EXIST123")).thenReturn(Optional.of(existingCar));
+
+        boolean result = service.addCar(existingCar);
+
+        assertFalse(result);
+        verify(carRepository, never()).addCar(any());
+    }
+
+    @Test
+    void testSearchCarsByModel() {
+        Car car1 = new Car("A1", "Megane", true);
+        Car car2 = new Car("A2", "Megane", false);
+
+        when(carRepository.findByModel("Megane")).thenReturn(List.of(car1, car2));
+
+        List<Car> results = service.searchCarsByModel("Megane");
+
+        assertEquals(2, results.size());
+        assertTrue(results.contains(car1));
+        assertTrue(results.contains(car2));
+    }
 }
